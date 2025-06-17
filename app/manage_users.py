@@ -1,4 +1,4 @@
-from user_utils import create_user, delete_user
+from user_service import create_user, delete_user
 
-
+delete_user('admin')
 create_user('admin', 'admin', 'admin')
