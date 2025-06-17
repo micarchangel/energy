@@ -1,15 +1,15 @@
-# app/auth.py
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+    QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 )
 from db import get_user_by_login, check_password
 
-class LoginWindow(QWidget):
-    def __init__(self, on_success):
+class LoginDialog(QDialog):
+    def __init__(self):
         super().__init__()
         self.setWindowTitle("Вход в систему")
         self.resize(300, 150)
-        self.on_success = on_success
+        self.role = None
+        self.user_id = None
 
         layout = QVBoxLayout()
 
@@ -41,7 +41,8 @@ class LoginWindow(QWidget):
 
         user_id, _, hashed_pw, role = user
         if check_password(password, hashed_pw):
-            self.on_success(user_id, role)
-            self.hide()
+            self.role = role
+            self.user_id = user_id
+            self.accept()
         else:
             QMessageBox.warning(self, "Ошибка", "Неверный пароль")

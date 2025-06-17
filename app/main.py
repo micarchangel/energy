@@ -1,23 +1,21 @@
-# main.py
 import sys
-from PyQt6.QtWidgets import QApplication
-from db import initialize_db, write_log
+from PyQt6.QtWidgets import QApplication, QTabWidget
 from gui import MainApp
-from auth import LoginWindow
+from auth import LoginDialog
+from PyQt6.QtWidgets import QDialog
 
 def main():
-    initialize_db()
-
     app = QApplication(sys.argv)
-    main_window = {}
 
-    def launch_main(user_id, role):
-        write_log("Вход в систему", user_id)
-        main_window['window'] = MainApp(user_id=user_id, role=role)
-        main_window['window'].show()
+    login_dialog = LoginDialog()
+    if login_dialog.exec() != QDialog.DialogCode.Accepted:
+        sys.exit(0)
 
-    login = LoginWindow(on_success=launch_main)
-    login.show()
+    user_login = login_dialog.login_input.text()
+    user_role = login_dialog.role
+
+    main_window = MainApp(current_user=user_login, role=user_role)
+    main_window.show()
 
     sys.exit(app.exec())
 
