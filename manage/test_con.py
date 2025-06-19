@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QApplication, QMessageBox
 import sys
-from db import get_connection
+from app.db import get_connection
 
 def test_connection():
     try:

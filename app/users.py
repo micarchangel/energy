@@ -1,10 +1,29 @@
+"""
+Модуль users.py предназначен для управления пользователями системы.
+
+Содержит функции для добавления, редактирования, удаления и получения информации о пользователях.
+"""
+
 from db import get_connection
 import hashlib
 
 def hash_password(password: str) -> str:
+    """
+    Хеширует пароль с использованием алгоритма SHA-256.
+
+    :param password: Строка пароля
+    :return: Хешированная строка пароля
+    """
     return hashlib.sha256(password.encode()).hexdigest()
 
 def add_user(login, password, role):
+    """
+    Добавляет нового пользователя в базу данных.
+
+    :param login: Логин пользователя
+    :param password: Пароль (в чистом виде)
+    :param role: Роль пользователя (admin, operator, inspector, cashier)
+    """
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
@@ -13,6 +32,13 @@ def add_user(login, password, role):
             """, (login, hash_password(password), role))
 
 def update_user(user_id, login, role):
+    """
+    Обновляет логин и роль существующего пользователя.
+
+    :param user_id: ID пользователя
+    :param login: Новый логин
+    :param role: Новая роль
+    """
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
@@ -20,17 +46,33 @@ def update_user(user_id, login, role):
             """, (login, role, user_id))
 
 def delete_user(user_id):
+    """
+    Удаляет пользователя по ID.
+
+    :param user_id: ID пользователя
+    """
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("DELETE FROM users WHERE id=%s", (user_id,))
 
 def get_users():
+    """
+    Возвращает список всех пользователей (id, login, role).
+
+    :return: Список кортежей
+    """
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT id, login, role FROM users ORDER BY id")
             return cur.fetchall()
 
 def get_user_by_login(login):
+    """
+    Возвращает ID пользователя по его логину.
+
+    :param login: Логин пользователя
+    :return: Кортеж (id,) или None
+    """
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT id FROM users WHERE login=%s", (login,))

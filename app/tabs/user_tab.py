@@ -1,8 +1,17 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox, QTableWidget, QTableWidgetItem, QHBoxLayout
 from app.users import add_user, delete_user, get_users
+from logging import log_action
+from session import current_user_id
+
 
 class UserTab(QWidget):
+    """
+    Вкладка управления пользователями. Позволяет добавлять и удалять пользователей системы.
+    """
     def __init__(self):
+        """
+        Инициализация интерфейса вкладки пользователей.
+        """
         super().__init__()
         self.layout = QVBoxLayout(self)
 
@@ -39,6 +48,9 @@ class UserTab(QWidget):
         self.load_users()
 
     def handle_add_user(self):
+        """
+        Обработчик добавления пользователя.
+        """
         login = self.login_input.text().strip()
         password = self.password_input.text().strip()
         role = self.role_input.currentText()
@@ -49,12 +61,16 @@ class UserTab(QWidget):
 
         try:
             add_user(login, password, role)
+            log_action(current_user_id, f"Добавлен пользователь: {login} с ролью {role}")
             QMessageBox.information(self, "Успех", "Пользователь добавлен.")
             self.load_users()
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось добавить пользователя: {e}")
 
     def handle_delete_user(self):
+        """
+        Обработчик удаления выбранного пользователя.
+        """
         selected_items = self.table.selectedItems()
         if not selected_items:
             QMessageBox.warning(self, "Ошибка", "Выберите пользователя для удаления.")
@@ -73,12 +89,16 @@ class UserTab(QWidget):
         if confirm == QMessageBox.StandardButton.Yes:
             try:
                 delete_user(user_id)
+                log_action(current_user_id, f"Удалён пользователь с ID: {user_id}")
                 QMessageBox.information(self, "Успех", "Пользователь удалён.")
                 self.load_users()
             except Exception as e:
                 QMessageBox.critical(self, "Ошибка", f"Не удалось удалить пользователя: {e}")
 
     def load_users(self):
+        """
+        Загружает список пользователей в таблицу.
+        """
         self.table.setRowCount(0)
         for user in get_users():
             row_pos = self.table.rowCount()
