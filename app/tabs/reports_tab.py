@@ -41,15 +41,15 @@ class ReportsTab(QWidget):
                     a.full_name AS "Абонент",
                     a.account_number AS "Лицевой счёт",
                     m.serial_number AS "Счётчик",
-                    r.reading_value AS "Показание",
+                    r.value AS "Показание",
                     r.reading_date AS "Дата",
                     p.amount AS "Оплата",
-                    p.payment_date AS "Дата оплаты"
+                    p.pay_date AS "Дата оплаты"
                 FROM abonents a
                 LEFT JOIN meters m ON a.id = m.abonent_id
                 LEFT JOIN readings r ON m.id = r.meter_id
                 LEFT JOIN payments p ON a.id = p.abonent_id
-                ORDER BY a.full_name, r.reading_date, p.payment_date;
+                ORDER BY a.full_name, r.reading_date, p.pay_date;
             """)
             rows = cur.fetchall()
             columns = [desc[0] for desc in cur.description]
