@@ -37,6 +37,7 @@ class MainApp(QMainWindow):
         self.tabs.addTab(DebtTab(), "Задолженность")
 
         if self.role in ("admin", "inspector", "cashier"):
+            self.tabs.addTab(PaymentsTab(), "Оплаты")
 
         if self.role in ("admin", "inspector"):
             self.tabs.addTab(TariffsTab(), "Тарифы")
