@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox, QTableWidget, QTableWidgetItem, QHBoxLayout
 from app.users import add_user, delete_user, get_users
-from logging import log_action
-from session import current_user_id
+from app.logging import log_action
+from app.session import current_user_id
 
 
 class UserTab(QWidget):

@@ -7,7 +7,16 @@ from db import get_user_by_login, check_password
 from session import set_current_user, current_user_id
 
 class LoginDialog(QDialog):
+    """
+    Диалоговое окно входа в систему.
+
+    Позволяет пользователю ввести логин и пароль и выполняет проверку данных.
+    В случае успешной авторизации сохраняется роль и ID пользователя.
+    """
     def __init__(self):
+        """
+        Инициализация компонентов окна входа.
+        """
         super().__init__()
         self.setWindowTitle("Вход в систему")
         self.resize(300, 150)
@@ -34,6 +43,11 @@ class LoginDialog(QDialog):
         self.setLayout(layout)
 
     def try_login(self):
+        """
+        Метод проверки данных пользователя при попытке входа.
+        Выполняет проверку логина и пароля, устанавливает текущего пользователя.
+        Логирует успешный вход.
+        """
         login = self.login_input.text()
         password = self.password_input.text()
 
@@ -47,7 +61,7 @@ class LoginDialog(QDialog):
             self.role = role
             self.user_id = user_id
             set_current_user(user_id)
-            log_action(current_user_id, f"Выполнен вход")
+            log_action(current_user_id, f"Выполнен вход пользователем {login}")
             self.accept()
         else:
             QMessageBox.warning(self, "Ошибка", "Неверный пароль")

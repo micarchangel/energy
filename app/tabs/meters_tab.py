@@ -1,11 +1,22 @@
+
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem,
     QHBoxLayout, QMessageBox, QInputDialog
 )
 from app.meters import get_all_meters, add_meter, update_meter, delete_meter
+from app.logging import log_action
+from app.session import current_user_id
+
 
 class MetersTab(QWidget):
+    """
+    Вкладка для управления счётчиками:
+    - Отображение списка
+    - Добавление, редактирование, удаление счётчиков
+    """
+
     def __init__(self):
+        """Инициализация интерфейса вкладки счётчиков"""
         super().__init__()
         self.layout = QVBoxLayout(self)
 
@@ -28,6 +39,7 @@ class MetersTab(QWidget):
         self.load_meters()
 
     def load_meters(self):
+        """Загружает и отображает все счётчики из базы данных"""
         meters = get_all_meters()
         self.table.setRowCount(len(meters))
         self.table.setColumnCount(5)
@@ -40,6 +52,7 @@ class MetersTab(QWidget):
             self.table.setItem(row, 4, QTableWidgetItem(meter["full_name"] or ""))
 
     def add_meter(self):
+        """Открывает диалог для добавления нового счётчика"""
         serial, ok1 = QInputDialog.getText(self, "Серийный номер", "Введите серийный номер:")
         if not ok1: return
         type_, ok2 = QInputDialog.getText(self, "Тип", "Введите тип счётчика:")
@@ -50,11 +63,13 @@ class MetersTab(QWidget):
         if not ok4: return
         try:
             add_meter(serial, type_, date, abonent_id)
+            log_action(current_user_id, f"Добавлен счётчик: {serial}")
             self.load_meters()
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", str(e))
 
     def edit_meter(self):
+        """Редактирует выбранный счётчик"""
         row = self.table.currentRow()
         if row < 0:
             QMessageBox.warning(self, "Внимание", "Выберите строку для редактирования.")
@@ -69,9 +84,11 @@ class MetersTab(QWidget):
         abonent_id, ok4 = QInputDialog.getInt(self, "Абонент", "Введите ID абонента:")
         if not ok4: return
         update_meter(meter_id, serial, type_, date, abonent_id)
+        log_action(current_user_id, f"Редактирован счётчик ID {meter_id}")
         self.load_meters()
 
     def delete_meter(self):
+        """Удаляет выбранный счётчик после подтверждения"""
         row = self.table.currentRow()
         if row < 0:
             QMessageBox.warning(self, "Внимание", "Выберите строку для удаления.")
@@ -80,4 +97,5 @@ class MetersTab(QWidget):
         confirm = QMessageBox.question(self, "Подтверждение", "Удалить этот счётчик?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if confirm == QMessageBox.StandardButton.Yes:
             delete_meter(meter_id)
+            log_action(current_user_id, f"Удалён счётчик ID {meter_id}")
             self.load_meters()

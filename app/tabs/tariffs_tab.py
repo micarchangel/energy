@@ -1,10 +1,18 @@
-
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QTableWidget, QTableWidgetItem, QLineEdit, QDateEdit, QMessageBox
 from PyQt6.QtCore import QDate
 from app.tariffs import get_tariffs, add_tariff, delete_tariff
+from app.logging import log_action
+from app.session import current_user_id
+
 
 class TariffsTab(QWidget):
+    """
+    Вкладка управления тарифами: добавление, удаление и отображение тарифов.
+    """
     def __init__(self):
+        """
+        Инициализация интерфейса вкладки тарифов.
+        """
         super().__init__()
         self.setLayout(QVBoxLayout())
 
@@ -26,7 +34,6 @@ class TariffsTab(QWidget):
         form_layout.addWidget(self.zone_input)
         form_layout.addWidget(self.value_input)
         form_layout.addWidget(self.date_input)
-
         self.layout().addLayout(form_layout)
 
         button_layout = QHBoxLayout()
@@ -34,7 +41,6 @@ class TariffsTab(QWidget):
         add_button.clicked.connect(self.add_tariff)
         del_button = QPushButton("Удалить")
         del_button.clicked.connect(self.delete_selected_tariff)
-
         button_layout.addWidget(add_button)
         button_layout.addWidget(del_button)
         self.layout().addLayout(button_layout)
@@ -42,6 +48,9 @@ class TariffsTab(QWidget):
         self.load_tariffs()
 
     def load_tariffs(self):
+        """
+        Загружает список тарифов в таблицу.
+        """
         self.table.setRowCount(0)
         for row_data in get_tariffs():
             row = self.table.rowCount()
@@ -50,11 +59,15 @@ class TariffsTab(QWidget):
                 self.table.setItem(row, col, QTableWidgetItem(str(data)))
 
     def add_tariff(self):
+        """
+        Добавляет новый тариф в базу данных.
+        """
         zone = self.zone_input.text()
         value = self.value_input.text()
         date = self.date_input.date().toPyDate()
         try:
             add_tariff(zone, float(value), date)
+            log_action(current_user_id, f"Добавлен тариф: зона={zone}, тариф={value}, дата={date}")
             self.zone_input.clear()
             self.value_input.clear()
             self.date_input.setDate(QDate.currentDate())
@@ -63,10 +76,14 @@ class TariffsTab(QWidget):
             QMessageBox.critical(self, "Ошибка", str(e))
 
     def delete_selected_tariff(self):
+        """
+        Удаляет выбранный тариф из базы данных.
+        """
         row = self.table.currentRow()
         if row == -1:
             QMessageBox.warning(self, "Внимание", "Выберите тариф для удаления.")
             return
         tariff_id = self.table.item(row, 0).text()
         delete_tariff(tariff_id)
+        log_action(current_user_id, f"Удалён тариф с ID: {tariff_id}")
         self.load_tariffs()

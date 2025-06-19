@@ -4,17 +4,8 @@
 Содержит функции для добавления, редактирования, удаления и получения информации о пользователях.
 """
 
-from db import get_connection
-import hashlib
+from db import get_connection, hash_password
 
-def hash_password(password: str) -> str:
-    """
-    Хеширует пароль с использованием алгоритма SHA-256.
-
-    :param password: Строка пароля
-    :return: Хешированная строка пароля
-    """
-    return hashlib.sha256(password.encode()).hexdigest()
 
 def add_user(login, password, role):
     """
@@ -68,12 +59,9 @@ def get_users():
 
 def get_user_by_login(login):
     """
-    Возвращает ID пользователя по его логину.
-
-    :param login: Логин пользователя
-    :return: Кортеж (id,) или None
+    Возвращает пользователя по логину: (id, login, hashed_password, role)
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id FROM users WHERE login=%s", (login,))
+            cur.execute("SELECT id, login, password_hash, role FROM users WHERE login=%s", (login,))
             return cur.fetchone()

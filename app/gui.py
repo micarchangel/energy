@@ -33,7 +33,6 @@ class MainApp(QMainWindow):
         self.tabs.addTab(AbonentsTab(), "Абоненты")
         self.tabs.addTab(MetersTab(), "Счетчики")
         self.tabs.addTab(ReadingsTab(), "Показания")
-        self.tabs.addTab(PaymentsTab(), "Оплаты")
         self.tabs.addTab(ReportsTab(), "Отчёты")
         self.tabs.addTab(DebtTab(), "Задолженность")
 
@@ -67,72 +66,29 @@ class MainApp(QMainWindow):
             }
         """)
 
-    def create_tab(self, title, elements):
-        tab = QWidget()
-        layout = QVBoxLayout()
-        layout.addWidget(QLabel(title))
-        for text in elements:
-            layout.addWidget(QPushButton(text))
-        layout.addStretch()
-        scroll = QScrollArea()
-        container = QWidget()
-        container.setLayout(layout)
-        scroll.setWidget(container)
-        scroll.setWidgetResizable(True)
-        wrapper = QVBoxLayout()
-        wrapper.addWidget(scroll)
-        tab.setLayout(wrapper)
-        return tab
-
-    def create_user_tab(self):
-        return self.create_tab("Управление пользователями", [
-            "Добавить пользователя",
-            "Редактировать пользователя",
-            "Удалить пользователя"
-        ])
-
-    def create_clients_tab(self):
-        return self.create_tab("Работа с абонентами", [
-            "Добавить абонента",
-            "Редактировать абонента",
-            "Удалить абонента",
-            "Поиск по ИНН/ФИО"
-        ])
-
-    def create_meters_tab(self):
-        return self.create_tab("Устройства учета", [
-            "Добавить счетчик",
-            "Привязать к абоненту",
-            "Редактировать / удалить"
-        ])
-
-    def create_meter_readings_tab(self):
-        return self.create_tab("Учёт показаний", [
-            "Ввести показания",
-            "Просмотреть историю",
-            "Автоматическая проверка и расчёт"
-        ])
-
-    def create_payments_tab(self):
-        return self.create_tab("Учёт оплат", [
-            "Ввести оплату",
-            "Просмотр по периоду",
-            "Фильтрация должников"
-        ])
-
-    def create_reports_tab(self):
-        return self.create_tab("Отчётность", [
-            "Сформировать квитанцию",
-            "Сводный отчёт по оплатам",
-            "Экспорт в Excel / PDF"
-        ])
-
-    def create_admin_tab(self):
-        return self.create_tab("Администрирование", [
-            "Резервное копирование",
-            "Восстановление из копии",
-            "Управление базой данных"
-        ])
+    # def create_tab(self, title, elements):
+    #     tab = QWidget()
+    #     layout = QVBoxLayout()
+    #     layout.addWidget(QLabel(title))
+    #     for text in elements:
+    #         layout.addWidget(QPushButton(text))
+    #     layout.addStretch()
+    #     scroll = QScrollArea()
+    #     container = QWidget()
+    #     container.setLayout(layout)
+    #     scroll.setWidget(container)
+    #     scroll.setWidgetResizable(True)
+    #     wrapper = QVBoxLayout()
+    #     wrapper.addWidget(scroll)
+    #     tab.setLayout(wrapper)
+    #     return tab
+    #
+    # def create_user_tab(self):
+    #     return self.create_tab("Управление пользователями", [
+    #         "Добавить пользователя",
+    #         "Редактировать пользователя",
+    #         "Удалить пользователя"
+    #     ])
 
 
 def main():

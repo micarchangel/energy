@@ -1,9 +1,19 @@
+"""
+Модуль работы с таблицей показаний (readings) в базе данных energy.
+
+Предоставляет функции для получения, добавления и удаления записей о показаниях счётчиков.
+"""
+
 import psycopg2
 from psycopg2 import sql
-from .db import get_connection
-
+from db import get_connection
 
 def get_all_readings():
+    """
+    Получает все записи о показаниях с данными счётчиков и абонентов.
+
+    :return: список кортежей с показаниями и сопутствующей информацией
+    """
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
@@ -16,8 +26,14 @@ def get_all_readings():
             """)
             return cur.fetchall()
 
-
 def add_reading(reading_date, value, meter_id):
+    """
+    Добавляет новое показание в базу данных.
+
+    :param reading_date: дата показания
+    :param value: значение показания
+    :param meter_id: ID счётчика
+    """
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -26,8 +42,12 @@ def add_reading(reading_date, value, meter_id):
             )
         conn.commit()
 
-
 def delete_reading(reading_id):
+    """
+    Удаляет запись о показании по её ID.
+
+    :param reading_id: ID записи о показании
+    """
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("DELETE FROM readings WHERE id = %s", (reading_id,))

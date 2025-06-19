@@ -1,3 +1,4 @@
+
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QFileDialog,
     QMessageBox, QLineEdit, QLabel, QHBoxLayout
@@ -5,10 +6,18 @@ from PyQt6.QtWidgets import (
 import csv
 import pandas as pd
 from app.debt import calculate_debts_for_account
+from app.logging import log_action
+from app.session import current_user_id
 
 
 class DebtTab(QWidget):
+    """
+    Вкладка для отображения и экспорта информации о задолженности абонентов.
+    Позволяет выполнять поиск по лицевому счёту и экспортировать данные в CSV или Excel.
+    """
+
     def __init__(self):
+        """Инициализация элементов интерфейса вкладки задолженности."""
         super().__init__()
         self.layout = QVBoxLayout(self)
 
@@ -34,6 +43,10 @@ class DebtTab(QWidget):
         self.layout.addWidget(self.export_xlsx_btn)
 
     def search_by_account(self):
+        """
+        Выполняет поиск задолженности по введённому лицевому счёту
+        и отображает результаты в таблице.
+        """
         account_number = self.account_input.text().strip()
         if not account_number:
             QMessageBox.warning(self, "Ошибка", "Введите лицевой счёт.")
@@ -57,7 +70,10 @@ class DebtTab(QWidget):
         self.table.setItem(0, 3, QTableWidgetItem(f"{result['total_payment']:.2f}"))
         self.table.setItem(0, 4, QTableWidgetItem(f"{result['debt']:.2f}"))
 
+        log_action(current_user_id, f"Поиск задолженности по счёту {account_number}")
+
     def export_to_csv(self):
+        """Экспортирует содержимое таблицы в CSV-файл."""
         path, _ = QFileDialog.getSaveFileName(self, "Сохранить в CSV", "", "CSV Files (*.csv)")
         if path:
             with open(path, mode='w', newline='', encoding='utf-8') as file:
@@ -70,8 +86,10 @@ class DebtTab(QWidget):
                         for col in range(self.table.columnCount())
                     ])
             QMessageBox.information(self, "Экспорт", "Файл CSV успешно сохранён!")
+            log_action(current_user_id, "Экспорт задолженности в CSV")
 
     def export_to_xlsx(self):
+        """Экспортирует содержимое таблицы в Excel-файл."""
         path, _ = QFileDialog.getSaveFileName(self, "Сохранить в Excel", "", "Excel Files (*.xlsx)")
         if path:
             data = []
@@ -84,3 +102,4 @@ class DebtTab(QWidget):
             df = pd.DataFrame(data, columns=[self.table.horizontalHeaderItem(i).text() for i in range(self.table.columnCount())])
             df.to_excel(path, index=False)
             QMessageBox.information(self, "Экспорт", "Файл Excel успешно сохранён!")
+            log_action(current_user_id, "Экспорт задолженности в Excel")

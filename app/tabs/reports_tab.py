@@ -5,10 +5,18 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 import psycopg2
+from app.logging import log_action
+from app.session import current_user_id
 
 
 class ReportsTab(QWidget):
+    """
+    Вкладка для экспорта отчётов по абонентам, показаниям и оплатам в CSV и XLSX.
+    """
     def __init__(self):
+        """
+        Инициализация интерфейса вкладки отчетов.
+        """
         super().__init__()
         self.layout = QVBoxLayout()
 
@@ -27,6 +35,10 @@ class ReportsTab(QWidget):
         self.setLayout(self.layout)
 
     def fetch_data(self):
+        """
+        Получает данные отчёта из базы данных.
+        :return: Кортеж (заголовки столбцов, строки данных)
+        """
         try:
             conn = psycopg2.connect(
                 dbname="energy",
@@ -61,6 +73,9 @@ class ReportsTab(QWidget):
             return [], []
 
     def export_to_csv(self):
+        """
+        Экспортирует данные отчёта в CSV-файл.
+        """
         columns, data = self.fetch_data()
         if not data:
             return
@@ -74,11 +89,15 @@ class ReportsTab(QWidget):
                 writer = csv.writer(file)
                 writer.writerow(columns)
                 writer.writerows(data)
+            log_action(current_user_id, f"Экспорт отчёта в CSV: {file_path}")
             QMessageBox.information(self, "Успешно", "Отчет успешно выгружен в CSV.")
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось сохранить файл: {e}")
 
     def export_to_xlsx(self):
+        """
+        Экспортирует данные отчёта в XLSX-файл.
+        """
         columns, data = self.fetch_data()
         if not data:
             return
@@ -99,6 +118,7 @@ class ReportsTab(QWidget):
                     worksheet.write(row_num, col_num, cell_data)
 
             workbook.close()
+            log_action(current_user_id, f"Экспорт отчёта в XLSX: {file_path}")
             QMessageBox.information(self, "Успешно", "Отчет успешно выгружен в XLSX.")
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось сохранить файл: {e}")

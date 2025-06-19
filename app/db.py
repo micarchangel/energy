@@ -1,9 +1,11 @@
 # app/db.py
+
 import os
 import psycopg2
 import bcrypt
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from datetime import datetime
+from app.logging import log_action
 
 DB_NAME = "energy"
 DB_USER = "postgres"
@@ -12,6 +14,9 @@ DB_HOST = "localhost"
 DB_PORT = 5432
 
 def get_connection():
+    """
+    Создаёт и возвращает подключение к базе данных energy.
+    """
     return psycopg2.connect(
         dbname=DB_NAME,
         user=DB_USER,
@@ -21,6 +26,9 @@ def get_connection():
     )
 
 def create_database_if_not_exists():
+    """
+    Проверяет наличие базы данных energy и создаёт её, если не существует.
+    """
     try:
         conn = psycopg2.connect(
             dbname="postgres",
@@ -46,21 +54,10 @@ def create_database_if_not_exists():
     except Exception as e:
         print("Ошибка при создании базы данных:", e)
 
-def write_log(action, user_id=None):
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO logs (user_id, action, timestamp) VALUES (%s, %s, %s);",
-            (user_id, action, datetime.now())
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        print("Ошибка при записи в лог:", e)
-
 def initialize_db():
+    """
+    Проверяет инициализирована ли база данных, создаёт таблицы из schema.sql при необходимости.
+    """
     create_database_if_not_exists()
 
     try:
@@ -82,7 +79,7 @@ def initialize_db():
             conn.commit()
             print("База данных успешно инициализирована.")
 
-            write_log("Инициализация базы данных и создание таблиц", user_id=None)
+            log_action(None, "Инициализация базы данных и создание таблиц")
 
         cur.close()
         conn.close()
@@ -90,19 +87,37 @@ def initialize_db():
     except Exception as e:
         print("Ошибка при инициализации базы данных:", e)
 
-
 def hash_password(password: str) -> str:
+    """
+    Хеширует пароль с помощью bcrypt.
+
+    :param password: Пароль в открытом виде
+    :return: Хешированный пароль
+    """
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode(), salt).decode()
 
 def check_password(password: str, hashed: str) -> bool:
+    """
+    Проверяет соответствие пароля его хешу.
+
+    :param password: Пароль в открытом виде
+    :param hashed: Хеш пароля
+    :return: True, если пароли совпадают
+    """
     return bcrypt.checkpw(password.encode(), hashed.encode())
 
 def get_user_by_login(login: str):
+    """
+    Получает пользователя по логину.
+
+    :param login: Логин пользователя
+    :return: Кортеж (id, login, password_hash, role) или None
+    """
     conn = get_connection()
     cur = conn.cursor()
     cur.execute("SELECT id, login, password_hash, role FROM users WHERE login = %s", (login,))
     user = cur.fetchone()
     cur.close()
     conn.close()
-    return user  # tuple (id, login, password_hash, role)
+    return user
