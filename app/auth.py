@@ -1,7 +1,10 @@
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 )
+
+from app.logging import log_action
 from db import get_user_by_login, check_password
+from session import set_current_user, current_user_id
 
 class LoginDialog(QDialog):
     def __init__(self):
@@ -43,6 +46,8 @@ class LoginDialog(QDialog):
         if check_password(password, hashed_pw):
             self.role = role
             self.user_id = user_id
+            set_current_user(user_id)
+            log_action(current_user_id, f"Выполнен вход")
             self.accept()
         else:
             QMessageBox.warning(self, "Ошибка", "Неверный пароль")

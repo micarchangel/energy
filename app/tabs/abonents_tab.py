@@ -1,7 +1,8 @@
 
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QMessageBox, \
     QDialog, QFormLayout, QLineEdit
-from abonents import get_all_abonents, add_abonent, update_abonent, delete_abonent
+from app.abonents import get_all_abonents, add_abonent, update_abonent, delete_abonent
+from session import current_user_id
 
 class AbonentsTab(QWidget):
     def __init__(self):
