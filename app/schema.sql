@@ -37,11 +37,9 @@ CREATE TABLE payments (
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    login VARCHAR(50) UNIQUE NOT NULL,
+    login TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    role VARCHAR(20) NOT NULL CHECK (
-        role IN ('admin', 'operator', 'inspector', 'cashier')
-    )
+    role TEXT NOT NULL CHECK (role IN ('admin', 'operator', 'inspector', 'cashier'))
 );
 
 CREATE TABLE logs (

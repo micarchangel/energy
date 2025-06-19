@@ -1,8 +1,15 @@
+import sys
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QMainWindow, QTabWidget, QPushButton, QScrollArea
+    QWidget, QVBoxLayout, QLabel, QMainWindow, QTabWidget, QPushButton, QScrollArea, QApplication,
 )
-from PyQt6.QtGui import QPalette, QColor
-from PyQt6.QtCore import Qt
+
+from app.tabs.abonents_tab import AbonentsTab
+from app.tabs.meters_tab import MetersTab
+from app.tabs.payments_tab import PaymentsTab
+from app.tabs.readings_tab import ReadingsTab
+from app.tabs.tariffs_tab import TariffsTab
+from app.tabs.user_tab import UserTab
+
 
 class MainApp(QMainWindow):
     def __init__(self, current_user=None, role=None):
@@ -20,14 +27,17 @@ class MainApp(QMainWindow):
 
         self.apply_styles()
 
-        self.tabs.addTab(self.create_user_tab(), "Пользователи")
-        self.tabs.addTab(self.create_clients_tab(), "Абоненты")
-        self.tabs.addTab(self.create_meters_tab(), "Счетчики")
-        self.tabs.addTab(self.create_meter_readings_tab(), "Показания")
-        self.tabs.addTab(self.create_payments_tab(), "Оплаты")
+        self.tabs.addTab(AbonentsTab(), "Абоненты")
+        self.tabs.addTab(MetersTab(), "Счетчики")
+        self.tabs.addTab(ReadingsTab(), "Показания")
+        self.tabs.addTab(PaymentsTab(), "Оплаты")
         self.tabs.addTab(self.create_reports_tab(), "Отчёты")
 
+        if self.role in ("admin", 'inspector'):
+            self.tabs.addTab(TariffsTab(), "Тарифы")
+
         if self.role == "admin":
+            self.tabs.addTab(UserTab(), "Пользователи")
             self.tabs.addTab(self.create_admin_tab(), "Настройки")
 
     def apply_styles(self):
@@ -116,3 +126,16 @@ class MainApp(QMainWindow):
             "Восстановление из копии",
             "Управление базой данных"
         ])
+
+
+def main():
+    app = QApplication(sys.argv)
+
+
+    main_window = MainApp(current_user='admin', role='admin')
+    main_window.show()
+
+    sys.exit(app.exec())
+
+if __name__ == "__main__":
+    main()
