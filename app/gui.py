@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import (
 
 from app.tabs.abonents_tab import AbonentsTab
 from app.tabs.debt_tab import DebtTab
+from app.tabs.logs_tab import LogsTab
 from app.tabs.meters_tab import MetersTab
 from app.tabs.payments_tab import PaymentsTab
 from app.tabs.readings_tab import ReadingsTab
@@ -44,6 +45,7 @@ class MainApp(QMainWindow):
 
         if self.role == "admin":
             self.tabs.addTab(UserTab(), "Пользователи")
+            self.tabs.addTab(LogsTab(), "Логи")
 
     def apply_styles(self):
         self.setStyleSheet("""
