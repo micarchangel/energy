@@ -1,4 +1,3 @@
-
 # Автоматизированная информационная система «Учёт оплаты электроэнергии»
 
 ## Описание
@@ -51,44 +50,44 @@ python app/main.py
 
 ## Структура
 
-│   README.md
-│   requirements.txt
+```
+├── README.md
+├── requirements.txt
 │
-│
-├───app
-│   │   abonents.py
-│   │   auth.py
-│   │   db.py
-│   │   debt.py
-│   │   gui.py
-│   │   logging.py
-│   │   main.py
-│   │   meters.py
-│   │   payments.py
-│   │   readings.py
-│   │   schema.sql
-│   │   session.py
-│   │   tariffs.py
-│   │   users.py
+├── app/
+│   ├── abonents.py
+│   ├── auth.py
+│   ├── db.py
+│   ├── debt.py
+│   ├── gui.py
+│   ├── logging.py
+│   ├── main.py
+│   ├── meters.py
+│   ├── payments.py
+│   ├── readings.py
+│   ├── schema.sql
+│   ├── session.py
+│   ├── tariffs.py
+│   ├── users.py
 │   │
-│   ├───tabs
-│   │   │   abonents_tab.py
-│   │   │   debt_tab.py
-│   │   │   logs_tab.py
-│   │   │   meters_tab.py
-│   │   │   payments_tab.py
-│   │   │   readings_tab.py
-│   │   │   reports_tab.py
-│   │   │   tariffs_tab.py
-│   │   │   user_tab.py
+│   └── tabs/
+│       ├── abonents_tab.py
+│       ├── debt_tab.py
+│       ├── logs_tab.py
+│       ├── meters_tab.py
+│       ├── payments_tab.py
+│       ├── readings_tab.py
+│       ├── reports_tab.py
+│       ├── tariffs_tab.py
+│       └── user_tab.py
 │
+├── manage/
+│   ├── manage_users.py
+│   ├── test_con.py
+│   └── test_dialog.py
 │
-├───manage
-│       manage_users.py
-│       test_con.py
-│       test_dialog.py
-│
-└───test
+└── test/
+```
 
 - `app/` — основной код приложения
 - `main.py`- запуск приложения

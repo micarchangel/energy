@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QDialog, QLabel, QVBoxLayout, QPushButton
+from PyQt6.QtWidgets import QApplication, QDialog, QLabel, QVBoxLayout
 
 class TestDialog(QDialog):
     def __init__(self):

@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QMainWindow, QTabWidget, QPushButton, QScrollArea, QApplication,
+    QMainWindow, QTabWidget, QApplication,
 )
 
 from app.tabs.abonents_tab import AbonentsTab
@@ -20,7 +20,7 @@ class MainApp(QMainWindow):
         self.current_user = current_user
         self.role = role
 
-        self.setWindowTitle(f"АИС Учёт электроэнергии — {self.current_user} ({self.role})")
+        self.setWindowTitle(f"АИС Учёт оплаты электроэнергии — {self.current_user} ({self.role})")
         self.resize(1280, 720)
         self.setMinimumSize(1280, 720)
         self.setMaximumSize(3840, 2160)

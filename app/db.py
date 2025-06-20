@@ -1,10 +1,7 @@
-# app/db.py
-
 import os
 import psycopg2
 import bcrypt
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from datetime import datetime
 from app.logging import log_action
 
 DB_NAME = "energy"

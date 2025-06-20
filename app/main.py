@@ -1,7 +1,7 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QTabWidget
-from gui import MainApp
-from auth import LoginDialog
+from PyQt6.QtWidgets import QApplication
+from app.gui import MainApp
+from app.auth import LoginDialog
 from PyQt6.QtWidgets import QDialog
 
 def main():

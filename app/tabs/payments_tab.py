@@ -1,7 +1,5 @@
-
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QFormLayout, QLineEdit, QDateEdit
 from PyQt6.QtCore import QDate
-from datetime import date
 import psycopg2
 
 from app.payments import get_payments, add_payment, delete_payment

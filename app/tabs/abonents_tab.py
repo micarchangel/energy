@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
 )
 from app.abonents import get_all_abonents, add_abonent, update_abonent, delete_abonent
 from app.session import current_user_id
-from logging import log_action
+from app.logging import log_action
 
 
 class AbonentsTab(QWidget):

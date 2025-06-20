@@ -4,9 +4,7 @@
 Предоставляет функции для получения, добавления и удаления записей о показаниях счётчиков.
 """
 
-import psycopg2
-from psycopg2 import sql
-from db import get_connection
+from app.db import get_connection
 
 def get_all_readings():
     """

@@ -1,6 +1,4 @@
-
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QHBoxLayout, QMessageBox, QInputDialog
-from PyQt6.QtCore import Qt
 from app.readings import get_all_readings, add_reading, delete_reading
 from app.logging import log_action
 from app.session import current_user_id
